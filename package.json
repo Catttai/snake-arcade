@@ -1,0 +1,14 @@
+{
+  "name": "space-snake-arcade",
+  "version": "1.0.0",
+  "description": "Retro arcade-style snake game",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "npx http-server -p 8000 -o",
+    "dev": "npx live-server --port=8000"
+  },
+  "keywords": ["snake", "game", "arcade", "retro"],
+  "author": "Your Name",
+  "license": "MIT"
+} 

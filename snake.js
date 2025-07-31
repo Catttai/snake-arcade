@@ -27,6 +27,11 @@ let sounds = {};
 function initAudio() {
   try {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Resume audio context on mobile (required for iOS)
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
   } catch (e) {
     console.log('Audio not supported');
   }
@@ -34,6 +39,11 @@ function initAudio() {
 
 function createSound(frequency, duration, type = 'square') {
   if (!audioContext) return;
+  
+  // Resume audio context if suspended (mobile requirement)
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
   
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
@@ -279,6 +289,7 @@ let touchStartY = 0;
 
 function handleTouchStart(e) {
   e.preventDefault();
+  e.stopPropagation();
   console.log('Touch start detected');
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
@@ -286,6 +297,7 @@ function handleTouchStart(e) {
 
 function handleTouchEnd(e) {
   e.preventDefault();
+  e.stopPropagation();
   console.log('Touch end detected');
   
   if (!gameStarted || gameOver) {
@@ -344,6 +356,7 @@ function handleTouchEnd(e) {
 
 function handleTouchMove(e) {
   e.preventDefault();
+  e.stopPropagation();
 }
 
 function handleTap(e) {
@@ -380,11 +393,16 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Add mobile touch controls
+// Add mobile touch controls with better event handling
 canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
 canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
 canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
 canvas.addEventListener('click', handleTap);
+
+// Prevent scrolling on the entire game container
+document.querySelector('.arcade-cabinet').addEventListener('touchmove', function(e) {
+  e.preventDefault();
+}, { passive: false });
 
 // Initialize
 draw();

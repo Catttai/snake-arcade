@@ -273,6 +273,65 @@ function gameLoop() {
   }
 }
 
+// Mobile touch controls
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+function handleTouchStart(e) {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}
+
+function handleTouchEnd(e) {
+  if (!gameStarted || gameOver) return;
+  
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+  
+  const deltaX = touchEndX - touchStartX;
+  const deltaY = touchEndY - touchStartY;
+  
+  // Minimum swipe distance to register
+  const minSwipeDistance = 30;
+  
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    // Horizontal swipe
+    if (Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        // Swipe right
+        moveQueue.push({ x: 1, y: 0 });
+      } else {
+        // Swipe left
+        moveQueue.push({ x: -1, y: 0 });
+      }
+    }
+  } else {
+    // Vertical swipe
+    if (Math.abs(deltaY) > minSwipeDistance) {
+      if (deltaY > 0) {
+        // Swipe down
+        moveQueue.push({ x: 0, y: 1 });
+      } else {
+        // Swipe up
+        moveQueue.push({ x: 0, y: -1 });
+      }
+    }
+  }
+}
+
+function handleTap(e) {
+  if (gameOver) {
+    resetGame();
+    gameLoop();
+  } else if (!gameStarted) {
+    gameStarted = true;
+    playStartSound();
+    gameLoop();
+  }
+}
+
 document.addEventListener('keydown', e => {
   if (e.key === ' ') {
     if (gameOver) {
@@ -295,6 +354,11 @@ document.addEventListener('keydown', e => {
     case 'ArrowRight': moveQueue.push({ x: 1, y: 0 }); break;
   }
 });
+
+// Add mobile touch controls
+canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
+canvas.addEventListener('touchend', handleTouchEnd, { passive: true });
+canvas.addEventListener('click', handleTap);
 
 // Initialize
 draw();

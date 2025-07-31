@@ -236,8 +236,9 @@ h1 {
 /* Responsive design */
 @media (max-width: 600px) {
   .arcade-cabinet {
-    padding: 20px;
+    padding: 15px;
     margin: 10px;
+    max-width: 100%;
   }
   
   h1 {
@@ -247,10 +248,13 @@ h1 {
   #gameCanvas {
     width: 300px;
     height: 300px;
+    max-width: 100%;
+    touch-action: none; /* Prevents default touch behaviors */
   }
   
   #score {
     font-size: 0.9em;
+    padding: 10px;
   }
   
   .control-panel {
@@ -265,5 +269,35 @@ h1 {
   .button {
     width: 35px;
     height: 35px;
+  }
+  
+  /* Prevent zoom on double tap */
+  canvas {
+    touch-action: manipulation;
+  }
+}
+
+/* Prevent text selection on mobile */
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Mobile touch hints */
+@media (max-width: 600px) {
+  .game-screen::after {
+    content: 'SWIPE TO MOVE • TAP TO START';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7em;
+    color: #60a5fa;
+    text-align: center;
+    opacity: 0.8;
   }
 }

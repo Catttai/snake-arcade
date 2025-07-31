@@ -276,16 +276,31 @@ function gameLoop() {
 // Mobile touch controls
 let touchStartX = 0;
 let touchStartY = 0;
-let touchEndX = 0;
-let touchEndY = 0;
 
 function handleTouchStart(e) {
+  e.preventDefault();
+  console.log('Touch start detected');
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
 }
 
 function handleTouchEnd(e) {
-  if (!gameStarted || gameOver) return;
+  e.preventDefault();
+  console.log('Touch end detected');
+  
+  if (!gameStarted || gameOver) {
+    // Handle tap to start/restart
+    console.log('Starting/restarting game via touch');
+    if (gameOver) {
+      resetGame();
+      gameLoop();
+    } else if (!gameStarted) {
+      gameStarted = true;
+      playStartSound();
+      gameLoop();
+    }
+    return;
+  }
   
   const touchEndX = e.changedTouches[0].clientX;
   const touchEndY = e.changedTouches[0].clientY;
@@ -293,17 +308,21 @@ function handleTouchEnd(e) {
   const deltaX = touchEndX - touchStartX;
   const deltaY = touchEndY - touchStartY;
   
+  console.log('Swipe detected:', { deltaX, deltaY });
+  
   // Minimum swipe distance to register
-  const minSwipeDistance = 30;
+  const minSwipeDistance = 20;
   
   if (Math.abs(deltaX) > Math.abs(deltaY)) {
     // Horizontal swipe
     if (Math.abs(deltaX) > minSwipeDistance) {
       if (deltaX > 0) {
         // Swipe right
+        console.log('Swipe right');
         moveQueue.push({ x: 1, y: 0 });
       } else {
         // Swipe left
+        console.log('Swipe left');
         moveQueue.push({ x: -1, y: 0 });
       }
     }
@@ -312,13 +331,19 @@ function handleTouchEnd(e) {
     if (Math.abs(deltaY) > minSwipeDistance) {
       if (deltaY > 0) {
         // Swipe down
+        console.log('Swipe down');
         moveQueue.push({ x: 0, y: 1 });
       } else {
         // Swipe up
+        console.log('Swipe up');
         moveQueue.push({ x: 0, y: -1 });
       }
     }
   }
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
 }
 
 function handleTap(e) {
@@ -356,8 +381,9 @@ document.addEventListener('keydown', e => {
 });
 
 // Add mobile touch controls
-canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
-canvas.addEventListener('touchend', handleTouchEnd, { passive: true });
+canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
 canvas.addEventListener('click', handleTap);
 
 // Initialize

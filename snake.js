@@ -55,8 +55,12 @@ function saveSoundState() {
 // Update sound button appearance
 function updateSoundButton() {
   const soundButton = document.getElementById('soundButton');
+  const soundIcon = soundButton.querySelector('.sound-icon');
+  const soundText = soundButton.querySelector('.sound-text');
+  
   if (soundButton) {
-    soundButton.textContent = soundEnabled ? '🔊 SOUND ON' : '🔇 SOUND OFF';
+    soundIcon.textContent = soundEnabled ? '🔊' : '🔇';
+    soundText.textContent = soundEnabled ? 'SOUND ON' : 'SOUND OFF';
     soundButton.className = soundEnabled ? 'sound-button on' : 'sound-button off';
   }
 }

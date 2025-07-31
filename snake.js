@@ -23,6 +23,7 @@ let lastFoodEaten = false;
 // Sound effects
 let audioContext;
 let sounds = {};
+let soundEnabled = true; // Global sound state
 
 function initAudio() {
   try {
@@ -37,8 +38,31 @@ function initAudio() {
   }
 }
 
+// Load sound state from localStorage
+function loadSoundState() {
+  const savedSoundState = localStorage.getItem('snakeGameSoundEnabled');
+  if (savedSoundState !== null) {
+    soundEnabled = savedSoundState === 'true';
+  }
+  updateSoundButton();
+}
+
+// Save sound state to localStorage
+function saveSoundState() {
+  localStorage.setItem('snakeGameSoundEnabled', soundEnabled.toString());
+}
+
+// Update sound button appearance
+function updateSoundButton() {
+  const soundButton = document.getElementById('soundButton');
+  if (soundButton) {
+    soundButton.textContent = soundEnabled ? '🔊 SOUND ON' : '🔇 SOUND OFF';
+    soundButton.className = soundEnabled ? 'sound-button on' : 'sound-button off';
+  }
+}
+
 function createSound(frequency, duration, type = 'square') {
-  if (!audioContext) return;
+  if (!audioContext || !soundEnabled) return;
   
   // Resume audio context if suspended (mobile requirement)
   if (audioContext.state === 'suspended') {
@@ -62,24 +86,39 @@ function createSound(frequency, duration, type = 'square') {
 }
 
 function playEatSound() {
-  createSound(800, 0.1, 'square');
-  setTimeout(() => createSound(1000, 0.1, 'square'), 50);
+  if (soundEnabled) {
+    createSound(800, 0.1, 'square');
+    setTimeout(() => createSound(1000, 0.1, 'square'), 50);
+  }
 }
 
 function playGameOverSound() {
-  createSound(200, 0.2, 'sawtooth');
-  setTimeout(() => createSound(150, 0.2, 'sawtooth'), 100);
-  setTimeout(() => createSound(100, 0.3, 'sawtooth'), 200);
+  if (soundEnabled) {
+    createSound(200, 0.2, 'sawtooth');
+    setTimeout(() => createSound(150, 0.2, 'sawtooth'), 100);
+    setTimeout(() => createSound(100, 0.3, 'sawtooth'), 200);
+  }
 }
 
 function playMoveSound() {
-  createSound(300, 0.05, 'triangle');
+  if (soundEnabled) {
+    createSound(300, 0.05, 'triangle');
+  }
 }
 
 function playStartSound() {
-  createSound(400, 0.1, 'sine');
-  setTimeout(() => createSound(600, 0.1, 'sine'), 100);
-  setTimeout(() => createSound(800, 0.1, 'sine'), 200);
+  if (soundEnabled) {
+    createSound(400, 0.1, 'sine');
+    setTimeout(() => createSound(600, 0.1, 'sine'), 100);
+    setTimeout(() => createSound(800, 0.1, 'sine'), 200);
+  }
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  updateSoundButton();
+  saveSoundState();
+  console.log('Sound:', soundEnabled ? 'ON' : 'OFF');
 }
 
 function randomFood() {
@@ -407,3 +446,4 @@ document.querySelector('.arcade-cabinet').addEventListener('touchmove', function
 // Initialize
 draw();
 initAudio();
+loadSoundState(); // Load saved sound state

@@ -233,6 +233,51 @@ h1 {
 .button.green { background: #10b981; }
 .button.yellow { background: #f59e0b; }
 
+.sound-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8em;
+  padding: 8px 12px;
+  margin: 10px auto;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #1e3a8a, #1e40af);
+  color: #ffffff;
+  cursor: pointer;
+  display: block;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 0 8px rgba(59, 130, 246, 0.6),
+    inset 0 0 8px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 5px #ffffff;
+}
+
+.sound-button:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 12px rgba(59, 130, 246, 0.8),
+    inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.sound-button:active {
+  transform: scale(0.95);
+}
+
+.sound-button.on {
+  background: linear-gradient(145deg, #059669, #10b981);
+  border-color: #10b981;
+  box-shadow: 
+    0 0 8px rgba(16, 185, 129, 0.6),
+    inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.sound-button.off {
+  background: linear-gradient(145deg, #dc2626, #ef4444);
+  border-color: #ef4444;
+  box-shadow: 
+    0 0 8px rgba(239, 68, 68, 0.6),
+    inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
 /* Responsive design */
 @media (max-width: 600px) {
   .arcade-cabinet {
@@ -392,5 +437,14 @@ h1 {
   /* Show hint when game not started */
   .game-screen:not(.game-started)::before {
     display: block;
+  }
+}
+
+/* Mobile styling for sound button */
+@media (max-width: 600px) {
+  .sound-button {
+    font-size: 0.7em;
+    padding: 6px 10px;
+    margin: 8px auto;
   }
 }
